@@ -1,0 +1,79 @@
+
+  onExportPdf() {
+    const doc = new jsPDF('p', 'pt', 'a4');
+
+    const pageHeight = doc.internal.pageSize.height;
+    const pageWidth = doc.internal.pageSize.width;
+
+    doc.setFontSize(10);
+
+    doc.setFontSize(18);
+    doc.fromHTML(
+      document.getElementById('reportContentPdf'),
+      this.margins.left, // x coord
+      this.margins.top,
+      {
+        // y coord
+        width: this.margins.width // max width of content on PDF
+      },
+        this.headerFooterFormatting(doc, doc.internal.getNumberOfPages())
+      ,
+      this.margins
+    );
+
+
+
+    doc.setFontSize(14);
+    doc.text(
+      'COORDINATION OF HUMANITARIAN ASSISTANCE',
+      StaticUtilities.pdfTextCenter(
+        doc,
+        'COORDINATION OF HUMANITARIAN ASSISTANCE',
+        14
+      ),
+      19
+    );
+
+    // let printContents, popupWin;
+    // printContents = document.getElementById('print-content-ledger-report')
+    //   .innerHTML;
+    // popupWin = window.open('', '_blank', '');
+    // popupWin.document.open();
+
+
+    doc.save('detail-of-notes.pdf');
+  }
+
+
+  headerFooterFormatting(doc, totalPages) {
+    for (let i = totalPages; i >= 1; i--) {
+      console.log(totalPages);
+      doc.setPage(i);
+      // header
+      this.header(doc);
+
+      this.footer(doc, i, totalPages);
+      doc.page++;
+    }
+  }
+
+  header(doc) {
+    doc.setFontSize(30);
+    doc.setTextColor(40);
+    doc.setFontStyle('normal');
+
+    // if (this.base64Img) {
+    //   doc.addImage(this.base64Img, 'JPEG', this.margins.left, 10, 40, 40);
+    // }
+
+    doc.text('Report Header Template', this.margins.left + 50, 40);
+
+    doc.line(3, 70, this.margins.width + 43, 70); // horizontal line
+  }
+
+  footer(doc, pageNumber, totalPages) {
+    const str = 'Page ' + pageNumber + ' of ' + totalPages;
+
+    doc.setFontSize(10);
+    doc.text(str, this.margins.left, doc.internal.pageSize.height - 20);
+  }
